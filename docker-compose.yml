@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  
+  web:
+    build: .
+    container_name: ticketsystem-web
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    image: mysql:5.7
+    container_name: ticketsystem-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ticketsystem
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    ports:
+      - "3306:3306"
+    volumes:
+      - dbdata:/var/lib/mysql
+    restart: always
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: ticketsystem-phpmyadmin
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    ports:
+      - "8081:80"
+    depends_on:
+      - db
+    restart: always
+
+volumes:
+  dbdata:
